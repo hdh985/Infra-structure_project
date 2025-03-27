@@ -1,11 +1,13 @@
-name: Backend CD via CodeDeploy
+name: Deploy Backend to EC2 via CodeDeploy
 
 on:
   push:
+    paths:
+      - 'backend/**'
     branches: [ main ]
 
 jobs:
-  deploy:
+  backend-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,13 +16,14 @@ jobs:
 
     - name: Build JAR
       run: ./gradlew build
+      working-directory: backend
 
     - name: Package app
       run: |
         mkdir -p deploy
-        cp -r build/libs deploy/
-        cp appspec.yml deploy/
-        cp -r scripts/ deploy/
+        cp -r backend/build/libs deploy/
+        cp backend/appspec.yml deploy/
+        cp -r backend/scripts deploy/
         cd deploy && zip -r app.zip .
 
     - name: Upload to S3

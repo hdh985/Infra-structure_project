@@ -35,6 +35,10 @@ module "rds" {
   private_subnet_ids  = module.vpc.private_subnet_ids
   rds_sg_id           = module.security_group.rds_sg_id
 }
+module "frontend" {
+  source      = "./modules/frontend"
+  bucket_name = "my-project-bucket-gyung-${random_id.suffix.hex}"
+}
 
 data "aws_ami" "amazon_linux_2" {
   most_recent = true
